@@ -85,6 +85,7 @@ jobs:
         env:
           ARTIFACT_ID: ${{ steps.upstream.outputs.artifact_id }}
           ARTIFACT_NAME: ${{ steps.upstream.outputs.artifact_name }}
+          UPSTREAM_TOKEN: ${{ secrets.UPSTREAM_TOKEN }}
         shell: bash
         run: |
           set -euo pipefail
@@ -95,7 +96,9 @@ jobs:
 
           mkdir -p "$OUT"
 
-          curl -fsSL \
+          curl -fLsS \
+            -H "Authorization: Bearer $UPSTREAM_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
             "$API/actions/artifacts/$ARTIFACT_ID/zip" \
             -o "$ZIP"
 
